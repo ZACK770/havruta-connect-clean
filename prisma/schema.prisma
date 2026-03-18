@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  phone         String?  @unique
+  firstName     String
+  lastName      String
+  isExposed     Boolean  @default(false)  // האם חשף פרטים
+  
+  // Profile
+  level         String                     // "בוגר ישיבה", "סמיכה לרבנות"
+  bio           String?
+  learningGoal  String
+  avatarColor   String   @default("#3b82f6")
+  
+  // Location
+  city          String
+  country       String   @default("ישראל")
+  latitude      Float?
+  longitude     Float?
+  
+  // Preferences
+  categories    String[]                   // Array of category IDs
+  languages     String[]   @default(["hebrew"])
+  preferredTimes String[]                   // ["morning", "evening", etc.]
+  learningMethod String[]                  // ["zoom", "in-person", "phone"]
+  
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relations
+  sentMatches     Match[] @relation("MatchSender")
+  receivedMatches Match[] @relation("MatchReceiver")
+  studyPlans      StudyPlan[]
+  
+  @@index([city])
+  @@index([categories])
+  @@index([createdAt])
+  @@index([level])
+}
+
+model Match {
+  id          String   @id @default(cuid())
+  
+  senderId    String
+  sender      User     @relation("MatchSender", fields: [senderId], references: [id])
+  
+  receiverId  String
+  receiver    User     @relation("MatchReceiver", fields: [receiverId], references: [id])
+  
+  status      MatchStatus @default(PENDING)
+  aiAnalysis  String?                      // Gemini analysis
+  matchScore  Int?                         // 0-100 compatibility score
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([senderId, receiverId])
+}
+
+enum MatchStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+model StudyPlan {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  partnerId   String?                      // חברותא
+  topic       String
+  content     String                       // AI-generated plan
+  weeks       Int      @default(4)
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  studySessions StudySession[]
+  
+  @@index([userId])
+  @@index([partnerId])
+}
+
+// Categories for learning topics
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  nameHe      String   @unique
+  description String?
+  icon        String?
+  color       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([name])
+}
+
+// Learning sessions tracking (future feature)
+model StudySession {
+  id          String   @id @default(cuid())
+  
+  studyPlanId String
+  studyPlan   StudyPlan @relation(fields: [studyPlanId], references: [id])
+  
+  scheduledAt DateTime
+  duration    Int      // minutes
+  status      SessionStatus @default(SCHEDULED)
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum SessionStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  MISSED
+}
