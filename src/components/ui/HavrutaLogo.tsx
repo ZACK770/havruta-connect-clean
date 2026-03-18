@@ -75,7 +75,7 @@ export function HavrutaLogo({ className = '', size = 'md', animated = true }: Lo
           fill="none"
           stroke="url(#glowGradient)"
           strokeWidth="0.5"
-          className={animated && 'animate-pulse-slow'}
+          className={animated ? 'animate-pulse-slow' : undefined}
           opacity="0.6"
         />
 
@@ -85,7 +85,7 @@ export function HavrutaLogo({ className = '', size = 'md', animated = true }: Lo
           cy="50"
           r="45"
           fill="url(#logoGradient)"
-          className={animated && 'animate-rotate-slow'}
+          className={animated ? 'animate-rotate-slow' : undefined}
           filter="url(#logoGlow)"
         />
 
@@ -99,7 +99,7 @@ export function HavrutaLogo({ className = '', size = 'md', animated = true }: Lo
             strokeLinecap="round"
             strokeLinejoin="round"
             fill="none"
-            className={animated && 'animate-draw'}
+            className={animated ? 'animate-draw' : undefined}
             style={{
               strokeDasharray: 100,
               strokeDashoffset: animated ? 100 : 0,
@@ -109,7 +109,7 @@ export function HavrutaLogo({ className = '', size = 'md', animated = true }: Lo
         </g>
 
         {/* Connection dots representing "connect" */}
-        <g className={animated && 'animate-float'}>
+        <g className={animated ? 'animate-float' : undefined}>
           <circle cx="25" cy="25" r="2" fill="white" opacity="0.8">
             <animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite" />
           </circle>

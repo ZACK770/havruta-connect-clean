@@ -102,18 +102,27 @@ const config: Config = {
         'glass-medium': 'rgba(255, 255, 255, 0.6)',
         'glass-dark': 'rgba(15, 15, 35, 0.85)',
         'glass-medium-dark': 'rgba(15, 15, 35, 0.6)',
-        // Semantic colors
+        // Semantic colors - shadcn/ui compatible
         muted: {
-          DEFAULT: '#94a3b8',
-          foreground: '#475569',
+          DEFAULT: '#f1f5f9',
+          foreground: '#64748b',
         },
-        border: {
-          DEFAULT: '#e2e8f0',
-          foreground: '#cbd5e1',
+        card: {
+          DEFAULT: '#ffffff',
+          foreground: '#0f172a',
         },
+        popover: {
+          DEFAULT: '#ffffff',
+          foreground: '#0f172a',
+        },
+        border: '#e2e8f0',
         input: '#e2e8f0',
         ring: '#8b5cf6',
-        destructive: '#ef4444',
+        destructive: {
+          DEFAULT: '#ef4444',
+          foreground: '#ffffff',
+        },
+        foreground: '#0f172a',
         // Legacy support
         background: '#fafbff',
         text: '#0f0f23',
